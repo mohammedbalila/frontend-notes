@@ -1,7 +1,9 @@
 /* eslint-disable implicit-arrow-linebreak */
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import VueMeta from 'vue-meta';
 
+Vue.use(VueMeta);
 Vue.use(VueRouter);
 
 const routes = [
