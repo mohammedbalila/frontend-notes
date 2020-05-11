@@ -8,7 +8,7 @@
             <v-spacer></v-spacer>
           </v-toolbar>
           <v-card-text>
-            <v-form>
+            <v-form ref="form">
               <v-text-field
                 v-model="email"
                 type="email"
