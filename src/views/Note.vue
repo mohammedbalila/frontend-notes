@@ -3,26 +3,22 @@
     <v-row>
       <v-col cols="12">
         <v-text-field
-          label="Name this day"
+          label="Title"
           v-model="title"
-          :append-icon="!editTitle ? 'mdi-pencil' : 'mdi-check'"
+          append-icon="mdi-pencil"
           filled
           shaped
-          :readonly="!editTitle"
-          @click:append="editTitle = !editTitle"
           background-color="#a2bdf2"
         ></v-text-field>
       </v-col>
       <v-col cols="12">
         <v-textarea
           name="input-7-1"
-          label="Tell me about what you think 👀"
+          label="Content"
           v-model="body"
-          :append-icon="!editBody ? 'mdi-pencil' : 'mdi-check'"
+          append-icon="mdi-pencil"
           filled
           shaped
-          :readonly="!editBody"
-          @click:append="editBody = !editBody"
           background-color="#a2bdf2"
         ></v-textarea>
       </v-col>
@@ -65,8 +61,8 @@ export default {
   methods: {
     ...mapActions('notes', ['getNote', 'updateNote']),
     save() {
-      const { body, title } = this;
-      this.updateNote({ body, title });
+      // const { body, title } = this;
+      // this.updateNote({ body, title });
     },
   },
 };
