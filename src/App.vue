@@ -1,7 +1,9 @@
 <template>
   <v-app>
     <v-app-bar app color="indigo" dark>
-      <router-link class="link" to="/"> <h3>Notes</h3></router-link>
+      <router-link class="link" to="/">
+        <h3>Diarme</h3>
+      </router-link>
     </v-app-bar>
     <v-content>
       <router-view></router-view>

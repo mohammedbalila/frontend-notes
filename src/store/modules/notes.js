@@ -2,26 +2,7 @@
 import axios from 'axios';
 
 const state = {
-  notes: [
-    {
-      id: 1,
-      title: 'DayOne',
-      body: 'this is a note',
-      createdAt: new Date(),
-    },
-    {
-      id: 2,
-      title: 'DayTwo',
-      body: 'this is a note',
-      createdAt: new Date(),
-    },
-    {
-      id: 3,
-      title: 'DayThree',
-      body: 'this is a note',
-      createdAt: new Date(),
-    },
-  ],
+  notes: [],
   note: {},
 };
 
@@ -39,7 +20,8 @@ const mutations = {
 const actions = {
   async getNotes({ commit, state }) {
     try {
-      commit('SET_NOTES', state.notes);
+      const resp = await axios.get('/notes/');
+      commit('SET_NOTES', resp.data.notes);
     } catch (error) {
       throw new Error(error);
     }
@@ -47,30 +29,33 @@ const actions = {
 
   async getNote({ commit, state }, id) {
     try {
-      //   const resp = await axios.get(`/products/${productId}/notes/`);
-      const note = state.notes.find(_note => {
-        if (_note.id === id) {
-          return _note;
-        }
-      });
-      commit('SET_NOTE', note);
-      //   return resp.data;
+      const resp = await axios.get(`/notes/${id}/`);
+
+      commit('SET_NOTE', resp.data.note);
+      return resp.data.note;
     } catch (error) {
       throw new Error(error);
     }
   },
 
   async create({ dispatch }, note) {
-    // try {
-    //   const resp = await axios.post(
-    //     `/products/${review.product}/notes/`,
-    //     review,
-    //   );
-    //   dispatch('getnotes', review.product);
-    //   return resp.data;
-    // } catch (error) {
-    //   throw new Error(error);
-    // }
+    try {
+      const resp = await axios.post('/notes', note);
+      dispatch('getNotes');
+      return resp.data;
+    } catch (error) {
+      throw new Error(error);
+    }
+  },
+
+  async update({ dispatch }, note) {
+    try {
+      const resp = await axios.put(`/notes/${note.id}`, note);
+      dispatch('getNote', note.id);
+      return resp.data;
+    } catch (error) {
+      throw new Error(error);
+    }
   },
 };
 

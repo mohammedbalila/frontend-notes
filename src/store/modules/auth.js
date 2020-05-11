@@ -34,7 +34,7 @@ const actions = {
 
   async signUp({ commit }, user) {
     try {
-      const resp = await axios.post('/auth/registration/', user);
+      const resp = await axios.post('/users/signup/', user);
       commit('SET_CURRENT_USER', resp.data);
     } catch (error) {
       const errors = formatError(error.response);
@@ -45,7 +45,7 @@ const actions = {
 
   async logIn({ commit }, user) {
     try {
-      const resp = await axios.post('/auth/login/', user);
+      const resp = await axios.post('/users/login/', user);
       commit('SET_CURRENT_USER', resp.data);
     } catch (error) {
       const errors = formatError(error.response);
@@ -56,6 +56,7 @@ const actions = {
 
   async logOut({ commit }) {
     commit('SET_CURRENT_USER', null);
+    window.location.reload();
   },
 };
 
@@ -73,7 +74,7 @@ function saveState(key, state) {
 
 function formatError(error) {
   const { data } = error;
-  const errors = Object.values(data).map(err => err[0]);
+  const errors = Object.values(data).map(err => err);
   return errors;
 }
 
@@ -81,10 +82,10 @@ function setDefaultAuthHeaders(state) {
   const isDev = process.env.NODE_ENV === 'development';
   const url = isDev
     ? 'http://localhost:8000/api'
-    : 'https://darkforum.herokuapp.com/api';
+    : 'https://diarme-api.herokuapp.com/api';
   axios.defaults.baseURL = url;
   axios.defaults.headers.common.Authorization = state.currentUser
-    ? `JWT ${state.currentUser.token}`
+    ? `Bearer ${state.currentUser.token}`
     : '';
 }
 

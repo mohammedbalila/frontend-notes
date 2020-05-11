@@ -23,10 +23,8 @@
         ></v-textarea>
       </v-col>
       <v-col cols="12">
-        <v-btn class="mx-2" rounded dark color="indigo" @click="save">
-          Save
-          <v-icon dark>mdi-content-save</v-icon>
-        </v-btn>
+        <v-btn class="mx-2" rounded dark color="indigo" @click="save">Save</v-btn>
+        <v-btn class="mx-2" rounded dark color="red" @click="back">Back</v-btn>
       </v-col>
     </v-row>
   </v-container>
@@ -37,7 +35,6 @@ import { mapState, mapActions } from 'vuex';
 
 export default {
   name: 'Note',
-  props: { id: String },
   data() {
     return {
       editTitle: false,
@@ -52,18 +49,33 @@ export default {
     }),
   },
   created() {
-    this.getNote(this.id).then(() => {
-      this.title = this.note.title;
-      this.body = this.note.body;
-    });
+    if (this.$route.params.id !== '0') {
+      this.getNote(this.$route.params.id).then(() => {
+        this.title = this.note.title;
+        this.body = this.note.body;
+      });
+    }
   },
 
   methods: {
-    ...mapActions('notes', ['getNote', 'updateNote']),
+    ...mapActions('notes', ['getNote', 'update', 'create']),
     save() {
-      // const { body, title } = this;
-      // this.updateNote({ body, title });
+      const { body, title } = this;
+      if (this.$route.params.id === '0') {
+        this.create({ body, title });
+      } else {
+        // eslint-disable-next-line no-underscore-dangle
+        this.update({ id: this.note._id, body, title });
+      }
     },
+
+    back() {
+      this.$router.push('/');
+    },
+  },
+
+  destroyed() {
+    this.$destroy();
   },
 };
 </script>
