@@ -4,6 +4,8 @@
       <router-link class="link" to="/">
         <h3>Diarme</h3>
       </router-link>
+      <v-spacer></v-spacer>
+      <v-btn v-if="loggedIn" text @click="logOut">Logout</v-btn>
     </v-app-bar>
     <v-content>
       <router-view></router-view>
@@ -12,11 +14,21 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex';
+
 export default {
   name: 'App',
   data: () => ({
     //
   }),
+
+  computed: {
+    ...mapGetters('auth', ['loggedIn']),
+  },
+
+  methods: {
+    ...mapActions('auth', ['logOut']),
+  },
 
   metaInfo: {
     // Children can override the title.

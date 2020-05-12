@@ -34,28 +34,35 @@ const actions = {
 
   async signUp({ commit }, user) {
     try {
+      NProgress.start();
       const resp = await axios.post('/users/signup/', user);
       commit('SET_CURRENT_USER', resp.data);
+      NProgress.done();
     } catch (error) {
       const errors = formatError(error.response);
       commit('SET_ERRORS', errors);
+      NProgress.done();
       throw new Error(error);
     }
   },
 
   async logIn({ commit }, user) {
     try {
+      NProgress.start();
       const resp = await axios.post('/users/login/', user);
       commit('SET_CURRENT_USER', resp.data);
+      NProgress.done();
     } catch (error) {
       const errors = formatError(error.response);
       commit('SET_ERRORS', errors);
+      NProgress.done();
       throw new Error(error);
     }
   },
 
   async logOut({ commit }) {
     commit('SET_CURRENT_USER', null);
+    localStorage.removeItem('auth.currentUser');
     window.location.reload();
   },
 };
@@ -72,12 +79,6 @@ function saveState(key, state) {
   window.localStorage.setItem(key, JSON.stringify(state));
 }
 
-function formatError(error) {
-  const { data } = error;
-  const errors = Object.values(data).map(err => err);
-  return errors;
-}
-
 function setDefaultAuthHeaders(state) {
   const isDev = process.env.NODE_ENV === 'development';
   const url = isDev
@@ -87,6 +88,12 @@ function setDefaultAuthHeaders(state) {
   axios.defaults.headers.common.Authorization = state.currentUser
     ? `Bearer ${state.currentUser.token}`
     : '';
+}
+
+function formatError(error) {
+  const { data } = error;
+  const errors = Object.values(data).map(err => err);
+  return errors;
 }
 
 export default {

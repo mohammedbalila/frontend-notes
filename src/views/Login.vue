@@ -12,7 +12,7 @@
               <v-text-field
                 v-model="email"
                 type="email"
-                :rules="rules"
+                :rules="emailRules"
                 label="Email"
                 prepend-icon="mdi-account-circle"
                 required
@@ -49,7 +49,10 @@ export default {
   data: () => ({
     valid: true,
     email: '',
-    rules: [v => !!v || 'email is required'],
+    emailRules: [
+      v => !!v || 'E-mail is required',
+      v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
+    ],
     password: '',
     passwordRules: [
       v => !!v || 'Password is required',
@@ -72,11 +75,10 @@ export default {
 
   methods: {
     validate() {
-      if (this.$refs.form.validate());
-      {
+      if (this.$refs.form.validate()) {
         const user = {
-          email: this.email,
-          password: this.password,
+          email: this.email.trim(),
+          password: this.password.trim(),
         };
         this.$store
           .dispatch('auth/logIn', user)

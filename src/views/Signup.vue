@@ -12,7 +12,7 @@
               <v-text-field
                 v-model="email"
                 type="email"
-                :rules="rules"
+                :rules="emailRules"
                 label="Email"
                 prepend-icon="mdi-account-circle"
                 required
@@ -20,7 +20,8 @@
 
               <v-text-field
                 v-model="username"
-                :rules="rules"
+                :rules="usernameRules"
+                :counter="10"
                 label="Username"
                 prepend-icon="mdi-account"
                 required
@@ -57,7 +58,16 @@ export default {
   data: () => ({
     valid: true,
     email: '',
+    emailRules: [
+      v => !!v || 'E-mail is required',
+      v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
+    ],
     username: '',
+    usernameRules: [
+      v => !!v || 'required',
+      v => (v && v.length >= 4) || 'Username must be at least 4 characters',
+      v => (v && v.length <= 10) || 'Name must be less than 10 characters',
+    ],
     rules: [v => !!v || 'required'],
     password: '',
     passwordRules: [
@@ -81,12 +91,11 @@ export default {
 
   methods: {
     validate() {
-      if (this.$refs.form.validate());
-      {
+      if (this.$refs.form.validate()) {
         const user = {
-          email: this.email,
-          username: this.username,
-          password: this.password,
+          email: this.email.trim(),
+          username: this.username.trim(),
+          password: this.password.trim(),
         };
         this.$store
           .dispatch('auth/signUp', user)
