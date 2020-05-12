@@ -46,6 +46,20 @@ const actions = {
     }
   },
 
+  async oAuthGoogle() {
+    try {
+      NProgress.start();
+      const resp = await axios.get('/users/google-auth/');
+      commit('SET_CURRENT_USER', resp.data);
+      NProgress.done();
+    } catch (error) {
+      const errors = formatError(error.response);
+      commit('SET_ERRORS', errors);
+      NProgress.done();
+      throw new Error(error);
+    }
+  },
+
   async logIn({ commit }, user) {
     try {
       NProgress.start();

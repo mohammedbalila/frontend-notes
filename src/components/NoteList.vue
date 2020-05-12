@@ -5,7 +5,6 @@
         <v-subheader>Previous notes</v-subheader>
         <template v-for="note of notes">
           <v-list-item :key="note.title">
-            <!-- <v-subheader v-text="note.createdAt"></v-subheader> -->
             <v-list-item-content>
               <v-list-item-title
                 class="title"
@@ -14,11 +13,25 @@
               ></v-list-item-title>
               <v-list-item-subtitle v-text="note.date"></v-list-item-subtitle>
             </v-list-item-content>
-            <v-list-item-avatar>
-              <v-btn fab icon color="red" @click="deletedId = note._id;deleteDialog = true">
-                <v-icon>mdi-delete</v-icon>
-              </v-btn>
-            </v-list-item-avatar>
+            <v-list-item-action>
+              <v-row>
+                <v-col cols="3">
+                  <v-btn
+                    fab
+                    icon
+                    :color="note.isStarred? 'yellow' : 'grey'"
+                    @click="note.isStarred = !note.isStarred;star(note.isStarred, note._id)"
+                  >
+                    <v-icon>mdi-star</v-icon>
+                  </v-btn>
+                </v-col>
+                <v-col cols="3">
+                  <v-btn fab icon color="red" @click="deletedId = note._id;deleteDialog = true">
+                    <v-icon>mdi-delete</v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </v-list-item-action>
           </v-list-item>
           <v-divider :key="note.id"></v-divider>
         </template>
@@ -29,8 +42,8 @@
         <v-card-title class="headline">Are you sure?</v-card-title>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="primary darken-1" text @click="onDelete">Yes</v-btn>
           <v-btn color="red darken-1" text @click="deleteDialog = false">Cancel</v-btn>
+          <v-btn color="primary darken-1" text @click="onDelete">Yes</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -54,11 +67,14 @@ export default {
   },
 
   methods: {
-    ...mapActions('notes', ['deleteNote']),
+    ...mapActions('notes', ['deleteNote', 'update', 'getNotes']),
     onDelete() {
       this.deleteNote(this.deletedId).then(() => {
         this.deleteDialog = false;
       });
+    },
+    star(isStarred, id) {
+      this.update({ id, isStarred }).then(() => this.getNotes());
     },
   },
 };

@@ -18,10 +18,34 @@ const mutations = {
 };
 
 const actions = {
-  async getNotes({ commit, state }) {
+  async getNotes({ commit }) {
     try {
       NProgress.start();
       const resp = await axios.get('/notes/');
+      commit('SET_NOTES', resp.data.notes);
+      NProgress.done();
+    } catch (error) {
+      NProgress.done();
+      throw new Error(error);
+    }
+  },
+
+  async getStarredNotes({ commit }) {
+    try {
+      NProgress.start();
+      const resp = await axios.get('/notes/?isStarred=true');
+      commit('SET_NOTES', resp.data.notes);
+      NProgress.done();
+    } catch (error) {
+      NProgress.done();
+      throw new Error(error);
+    }
+  },
+
+  async search({ commit }, searchText) {
+    try {
+      NProgress.start({ commit });
+      const resp = await axios.get(`/notes/?title=${searchText}`);
       commit('SET_NOTES', resp.data.notes);
       NProgress.done();
     } catch (error) {
